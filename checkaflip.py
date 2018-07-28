@@ -15,7 +15,7 @@ If you need any help, or have suggestions, hit me up on my twitter - https://twi
 r = requests.session()
 client = discord.Client()
 
-token = 'NDcyNTY5MjkwMDE3NjAzNjA0.Dj1SVg.PO3SJF8cEY2yOJfVv5bgmGqqq-A' # NDcyNTY5MjFunkoFuckedTookStock.Dj1SVg.PO3TaquitoSlayerfVv5bgmGqqq-A
+token = 'NDcyNTY5MjFunkoFuckedTookStock.Dj1SVg.PO3TaquitoSlayerfVv5bgmGqqq-A' # note to self, don't forget to remove your own token before committing lol
 
 headers = {
     'Origin': 'http://www.checkaflip.com',
