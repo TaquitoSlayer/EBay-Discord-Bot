@@ -10,7 +10,7 @@ Follow me on [Twitter](https://twitter.com/taquitoslayer)
 If you do decide to use this on your Discord server, I request that you don't remove my name from the script itself :) It helps others for support when adding it to their server! Also, the clout. The fucking clout.
   
 ### How to install and use
-1. Make sure you install [Python3](https://www.python.org/getit/) and [pip](https://pip.pypa.io/en/stable/installing/) followed by running the following in the same directory as checkflip.py
+1. Make sure you install [Python3.6.6 (anything higher isn't currently supported by the discord module)](https://www.python.org/getit/) and [pip](https://pip.pypa.io/en/stable/installing/) followed by running the following in the same directory as checkflip.py
 ```bash
 pip install -r requirements.txt
 ```
