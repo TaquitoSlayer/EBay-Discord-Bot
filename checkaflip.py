@@ -1,5 +1,6 @@
 import discord
-import json
+# import json
+import bs4 as bs
 import requests
 
 
@@ -34,38 +35,53 @@ async def on_ready():
     print(f'{client.user.name} - follow me on twitter - @TaquitoSlayer')
 
 def site_search(keyword):
-    r.get('http://www.checkaflip.com', headers = headers)
-    print(keyword)
-    current_data = {"json": "{\"instance\":\"SearchByKeywords\",\"slot1\":\"FunkoFuckedTookStock\",\"slot2\":false,\"slot3\":{\"instance\":\"Returns\"}}"}
-    sold_data={"json": "{\"instance\":\"SearchCompleted\",\"slot1\":\"FunkoFuckedTookStock\",\"slot2\":false,\"slot3\":{\"instance\":\"Returns\"}}"}
+    resp = r.get(f'https://www.checkaflip.com/search/fresh/{keyword}', headers = headers)
+    # print(resp.text)
+    soup = bs.BeautifulSoup(resp.text, 'lxml')
+    # print(soup.find('div', {'class': 'average-prices'}))
+    # current_price = soup.find_all('li', {'class': 'col new'})
+    current_price = 'N/A'
+    completed_price = 'N/A'
+    for x in soup.find_all('li', {'class': 'col new'}):
+        if 'Sold' in str(x):
+            completed_price = x.b.get_text()
+        if 'Current' in str(x):
+            current_price  = x.b.get_text()
+    current_image_url = soup.find('img', {'itemprop': 'image'}).get('src')
+    current_name = soup.find('p', {'class': 'listing-title'}).get_text()
+    # completed_price = soup.find_all('div', {'class': 'average-prices'})
 
-    # weird payload needs fixing - if you think you can do this better, be my guest - this isn't as easy as it looks
-    current_string = current_data.get('json')
-    current_string = current_string.replace('FunkoFuckedTookStock', keyword)
-    current_data['json'] = current_string
-    # fixed
-
-    # weird payload needs fixing
-    sold_string = sold_data.get('json')
-    sold_string = sold_string.replace('FunkoFuckedTookStock', keyword)
-    sold_data['json'] = sold_string
-    # fixed
-
-    current_listings = r.post('http://www.checkaflip.com/api', headers=headers, data=current_data)
-    sold_listings = r.post('http://www.checkaflip.com/api', headers=headers, data=sold_data)
-
-    # current listing prices and info
-    current_not_sold = json.loads(current_listings.text)
-    current_price = str(round(current_not_sold['slot1'], 2))
-    current_image = current_not_sold['slot2']
-    current_image_url = current_image[0].get('itemImageUrl')
-    current_name = current_image[0].get('itemTitle').upper()
-
-    # completed listing pricing - everything else ignored since not needed
-    completed_sold = json.loads(sold_listings.text)
-    completed_price = str(round(completed_sold['slot1'], 2))
-    
     return current_price, current_image_url, current_name, completed_price
+    # print(keyword)
+    # current_data = {"json": "{\"instance\":\"SearchByKeywords\",\"slot1\":\"FunkoFuckedTookStock\",\"slot2\":false,\"slot3\":{\"instance\":\"Returns\"}}"}
+    # sold_data={"json": "{\"instance\":\"SearchCompleted\",\"slot1\":\"FunkoFuckedTookStock\",\"slot2\":false,\"slot3\":{\"instance\":\"Returns\"}}"}
+
+    # # weird payload needs fixing - if you think you can do this better, be my guest - this isn't as easy as it looks
+    # current_string = current_data.get('json')
+    # current_string = current_string.replace('FunkoFuckedTookStock', keyword)
+    # current_data['json'] = current_string
+    # # fixed
+
+    # # weird payload needs fixing
+    # sold_string = sold_data.get('json')
+    # sold_string = sold_string.replace('FunkoFuckedTookStock', keyword)
+    # sold_data['json'] = sold_string
+    # # fixed
+
+    # current_listings = r.post('http://www.checkaflip.com/api', headers=headers, data=current_data)
+    # sold_listings = r.post('http://www.checkaflip.com/api', headers=headers, data=sold_data)
+
+    # # current listing prices and info
+    # current_not_sold = json.loads(current_listings.text)
+    # current_price = str(round(current_not_sold['slot1'], 2))
+    # current_image = current_not_sold['slot2']
+    # current_image_url = current_image[0].get('itemImageUrl')
+    # current_name = current_image[0].get('itemTitle').upper()
+
+    # # completed listing pricing - everything else ignored since not needed
+    # completed_sold = json.loads(sold_listings.text)
+    # completed_price = str(round(completed_sold['slot1'], 2))
+
 
 # i'm dirty and use message. instead of bot.command - i'll add this soon if there's a demand for it
 @client.event
